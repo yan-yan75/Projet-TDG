@@ -1,0 +1,15 @@
+nombresommets
+numerosommet0
+taille
+coordX
+coordY
+nomimage.jpg
+...
+...
+nombrearcs
+numeroarc0
+numerosommet
+numerosommet
+poids
+...
+...
