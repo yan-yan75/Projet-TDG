@@ -1,5 +1,7 @@
 #include "graph.h"
 
+using namespace std;
+
 /***************************************************
                     VERTEX
 ****************************************************/
@@ -151,6 +153,8 @@ GraphInterface::GraphInterface(int x, int y, int w, int h)
 }
 
 
+/*
+
 /// Méthode spéciale qui construit un graphe arbitraire (démo)
 /// Cette méthode est à enlever et remplacer par un système
 /// de chargement de fichiers par exemple.
@@ -186,6 +190,9 @@ void Graph::make_example()
     add_interfaced_edge(8, 5, 2, 20.0);
     add_interfaced_edge(9, 3, 7, 80.0);
 }
+
+*/
+
 
 /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
 void Graph::update()
@@ -243,5 +250,130 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
     EdgeInterface *ei = new EdgeInterface(m_vertices[id_vert1], m_vertices[id_vert2]);
     m_interface->m_main_box.add_child(ei->m_top_edge);
     m_edges[idx] = Edge(weight, ei);
+
+    m_edges[idx].m_from = id_vert1;
+    m_edges[idx].m_to = id_vert2;
+
+    m_vertices[id_vert1].m_out.push_back(idx);
+    m_vertices[id_vert2].m_in.push_back(idx);
+}
+
+void Graph::Lecture(std::string nom_fichiers, std::string nom_fichiera)
+{
+                ///Sommet
+    ifstream fichiers("sommets.txt", ios::in); ///lecture seule
+
+    m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
+    std::string nom; // nom de l'image
+    int indice, x, y, poids, ordre1;
+    int ordre2, id, sommet1, sommet2, pds;
+
+
+  if(fichiers) // Si ouverture du fichier est un succes
+    {
+
+        fichiers >> ordre1; // on recupere le nombre de sommet
+
+        for(int i = 0; i < ordre1; i++)
+ {
+            fichiers >> indice >> poids >> x >> y >> nom;
+            add_interfaced_vertex(indice,poids,x,y,nom); // affichage sommet
+ }
+    }
+    else
+    {
+        cout <<"Erreur lors de l'ouverture du fichier Sommet" << endl;
+    }
+
+            fichiers.close();
+
+            ///Aretes
+
+        ifstream fichiera("aretes.txt", ios::in); ///lecture seule
+
+        if (fichiera)
+        {
+             fichiera >> ordre2; //Récupère le nombre d'aretes
+             std::cout << "1";
+            for (int j  = 0; j < ordre2; j++)
+            {
+                cout << "d";
+                fichiera >> id >> sommet1 >> sommet2 >> pds;
+                cout << "2";
+                add_interfaced_edge(id, sommet1, sommet2, pds);
+                cout << "3";
+            }
+              fichiera.close();
+        }
+        else
+        {
+            cout << "Erreur lors de l'ouverture du fichier Arete" << endl;
+        }
+}
+
+
+
+
+void Graph::sauvegarder(std::string nom_fichier)
+{
+    int nbsommet,nbarete;
+    std::string nom_fichier1;
+    std::string nom_fichier2;
+
+nom_fichier1 = nom_fichier + "sommet.txt";
+
+    ///sommet
+
+    std::ofstream fichier(nom_fichier1.c_str(), ios::out | ios::trunc);  // Ecriture
+
+    if(fichier)  // Succes ouverture
+    {
+	nbsommet = m_vertices.size();
+  	fichier	<< nbsommet << endl;
+
+         for(auto &el : m_vertices)
+        {
+            fichier<<el.first<<endl;
+            fichier<<el.second.m_value<<endl;
+            fichier<<el.second.m_interface->m_top_box.get_posx()<<endl;
+	    fichier<<el.second.m_interface->m_top_box.get_posy()<<endl;
+            fichier<<el.second.m_interface->m_img.getname()<<endl;
+
+        }
+
+        fichier.close();
+    }
+    else
+ {
+        cout<<"Erreur lors de l'ouverture du fichier"<<endl;
+    }
+
+    /// Aretes
+
+    nom_fichier2 = nom_fichier + "arete.txt";
+    ofstream fichier2(nom_fichier2.c_str(), ios::out | ios::trunc);  // Ecriture
+
+   if(fichier2)  // Si succes
+    {
+        nbarete = m_edges.size();
+        fichier2<< nbarete << endl;
+
+        for(auto &el : m_edges)
+        {
+            fichier2<<el.first<<endl;
+            fichier2<<el.second.m_from<<endl;
+            fichier2<<el.second.m_to<<endl;
+            fichier2<<el.second.m_weight<<endl;
+
+        }
+
+        fichier2.close();
+    }
+    else
+    {
+        cout<<"Erreur lors de l'ouverture du fichier"<<endl;
+    }
+
+
 }
 

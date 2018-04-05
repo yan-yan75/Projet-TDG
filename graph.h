@@ -75,6 +75,7 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <fstream>
 
 #include "grman/grman.h"
 
@@ -308,7 +309,15 @@ class Graph
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
+
+
+        void sauvegarder(std::string nom_fichier);
+        void Lecture(std::string nom_fichiers, std::string nom_fichiera);
+
 };
+
+
+
 
 
 #endif // GRAPH_H_INCLUDED
