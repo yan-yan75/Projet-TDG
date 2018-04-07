@@ -1,0 +1,55 @@
+Lecture du fichier
+#include <fstream>
+#include <string>
+
+void Graph::Lecture()
+{
+    ifstream fichier("Lecture.txt", ios::in);
+
+    m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
+    std::string nom; // nom de l'image
+    int indice, x, y, poids, ordre1;
+    int ordre2, id, sommet1, sommet2, pds;
+
+  if(fichier) // Si ouverture du fichier est un succes
+    {
+        fichier >> ordre1; // on recupere le nombre de sommet
+        cout << ordre1 << endl; // test
+
+        for(int i(0); i < ordre1; i++)
+ {
+            fichier >> indice; 
+            cout << indice<< endl ; // test
+            fichier >> poids;
+            cout << poids << endl; // test
+            fichier >> x; 
+            fichier >> y;
+            fichier >> nom;
+            cout << nom << endl; // test
+
+add_interfaced_vertex(indice,poids,x,y,nom); // test affichage sommet
+
+        }
+
+         fichier >> ordre2; // nombre d'aretes
+
+    for(int i(0); i < ordre2; i++)
+ 	{
+            fichier >> id; 
+            fichier >> sommet1;
+            fichier >> sommet2;
+            fichier >> pds;
+            add_interfaced_edge(id,sommet1,sommet2,pds); // test affichage arete
+        }
+
+
+fichier.close();
+    }
+    else//Si le fichier ne c'est pas ouvert
+    {
+        cerr << "Impossible d'ouvrir le fichier !" << endl;
+    }
+
+
+}
+

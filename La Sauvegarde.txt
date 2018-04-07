@@ -1,0 +1,62 @@
+void Graph::sauvegarder(std::string nom_fichier)
+{
+    int num,num2;
+    std::string nom_fichier1;
+    std::string nom_fichier2;
+
+nom_fichier1 = nom_fichier + "sommet.txt";
+
+    ///sommet
+
+    std::ofstream fichier(nom_fichier1.c_str(), ios::out | ios::trunc);  // Ecriture
+
+    if(fichier)  // Succes ouverture
+    {
+	num=m_vertices.size();
+  	fichier	<< num << endl;
+
+         for(auto &el : m_vertices)
+        {
+            fichier<<el.first<<endl;
+            fichier<<el.second.m_value<<endl;
+            fichier<<el.second.m_interface->m_top_box.get_posx()<<endl;
+	    fichier<<el.second.m_interface->m_top_box.get_posy()<<endl;
+            fichier<<el.second.m_interface->m_img.getname()<<endl;
+
+        }
+
+        fichier.close();
+    }
+    else
+ {
+        cout<<"Erreur lors de l'ouverture du fichier"<<endl;
+    }
+
+    /// Aretes
+
+    nom_fichier2 = nom_fichier + "arete.txt";
+    ofstream fichier2(nom_fichier2.c_str(), ios::out | ios::trunc);  // Ecriture
+
+   if(fichier2)  // Si succes
+    {
+        num2 = m_edges.size();
+        fichier2<<num2<<endl;
+
+        for(auto &el : m_edges)
+        {
+            fichier2<<el.first<<endl;
+            fichier2<<el.second.m_from<<endl;
+            fichier2<<el.second.m_to<<endl;
+            fichier2<<el.second.m_weight<<endl;
+
+        }
+
+        fichier2.close();
+    }
+    else
+    {
+        cout<<"Erreur lors de l'ouverture du fichier"<<endl;
+    }
+
+
+}
