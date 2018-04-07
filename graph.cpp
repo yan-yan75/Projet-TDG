@@ -16,7 +16,7 @@ VertexInterface::VertexInterface(int idx, int x, int y, std::string pic_name, in
 
     // Le slider de réglage de valeur
     m_top_box.add_child( m_slider_value );
-    m_slider_value.set_range(0.0 , 100.0); // Valeurs arbitraires, à adapter...
+    m_slider_value.set_range(0.0, 100.0);  // Valeurs arbitraires, à adapter...
     m_slider_value.set_dim(20,80);
     m_slider_value.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Up);
 
@@ -94,7 +94,7 @@ EdgeInterface::EdgeInterface(Vertex& from, Vertex& to)
 
     // Le slider de réglage de valeur
     m_box_edge.add_child( m_slider_weight );
-    m_slider_weight.set_range(0.0 , 100.0); // Valeurs arbitraires, à adapter...
+    m_slider_weight.set_range(0.0, 100.0);  // Valeurs arbitraires, à adapter...
     m_slider_weight.set_dim(16,40);
     m_slider_weight.set_gravity_y(grman::GravityY::Up);
 
@@ -138,18 +138,53 @@ void Edge::post_update()
 /// éléments qui seront ensuite ajoutés lors de la mise ne place du Graphe
 GraphInterface::GraphInterface(int x, int y, int w, int h)
 {
-    m_top_box.set_dim(1000,740);
+    m_top_box.set_dim(800,600);
     m_top_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
 
     m_top_box.add_child(m_tool_box);
-    m_tool_box.set_dim(80,720);
+    m_tool_box.set_dim(100, 590);
     m_tool_box.set_gravity_xy(grman::GravityX::Left, grman::GravityY::Up);
     m_tool_box.set_bg_color(BLANCBLEU);
 
     m_top_box.add_child(m_main_box);
-    m_main_box.set_dim(908,720);
+    m_main_box.set_dim(690,590);
     m_main_box.set_gravity_xy(grman::GravityX::Right, grman::GravityY::Up);
     m_main_box.set_bg_color(BLANCJAUNE);
+
+    ///Parametrisation du ButtonQ pour quitter
+    m_top_box.add_child(m_buttonQ);
+    m_buttonQ.set_frame(20, 560, 70, 30);
+    m_buttonQ.set_bg_color(BLANCJAUNE);
+
+    m_buttonQ.add_child(m_butQ);
+    m_butQ.set_message(" Quitter ");
+
+    ///Parametrisation du buttonS pour sauvegarder
+    m_top_box.add_child(m_buttonS);
+    m_buttonS.set_frame(20, 520, 70, 30);
+    m_buttonS.set_bg_color(BLANCJAUNE);
+
+    m_buttonS.add_child(m_butS);
+    m_butS.set_message(" Sauver ");
+
+    ///Parametrisation du buttonA pour Ajouter
+    m_top_box.add_child(m_buttonA);
+    m_buttonA.set_frame(20, 480, 70, 30);
+    m_buttonA.set_bg_color(BLANCJAUNE);
+
+    m_buttonA.add_child(m_butA);
+    m_butA.set_message(" Ajouter ");
+
+    ///Parametrisation du Button R pour retour
+    m_top_box.add_child(m_buttonR);
+    m_buttonR.set_frame(20, 50, 70, 30);
+    m_buttonR.set_bg_color(BLANCJAUNE);
+
+    m_buttonR.add_child(m_butR);
+    m_butR.set_message(" Menu ");
+
+
+
 }
 
 
@@ -214,6 +249,33 @@ void Graph::update()
     for (auto &elt : m_edges)
         elt.second.post_update();
 
+    if (m_interface -> m_buttonQ.clicked())
+    {
+        exit(1);
+    }
+}
+
+int Graph::updateb()
+{
+    update();
+    int x;
+
+    if (m_interface -> m_buttonA.clicked())
+    {
+        x=1;
+    }
+
+    if (m_interface -> m_buttonS.clicked())
+    {
+        x=2;
+    }
+
+    if (m_interface -> m_buttonR.clicked())
+    {
+        x=3;
+    }
+
+    return x;
 }
 
 /// Aide à l'ajout de sommets interfacés
@@ -260,67 +322,57 @@ void Graph::add_interfaced_edge(int idx, int id_vert1, int id_vert2, double weig
 
 void Graph::Lecture(std::string nom_fichiers, std::string nom_fichiera)
 {
-                ///Sommet
-    ifstream fichiers("sommets.txt", ios::in); ///lecture seule
+    ///Sommet
+    ifstream fichiers(nom_fichiers, ios::in); ///lecture seule
 
-    m_interface = std::make_shared<GraphInterface>(50, 0, 750, 600);
+    m_interface = std::make_shared<GraphInterface>(50, 0, 1000, 400);
     std::string nom; // nom de l'image
     int indice, x, y, poids, ordre1;
     int ordre2, id, sommet1, sommet2, pds;
 
-
-  if(fichiers) // Si ouverture du fichier est un succes
+    if(fichiers) // Si ouverture du fichier est un succes
     {
-
-        fichiers >> ordre1; // on recupere le nombre de sommet
+        fichiers >> ordre1; // on recupere le nombre de sommets
 
         for(int i = 0; i < ordre1; i++)
- {
+        {
             fichiers >> indice >> poids >> x >> y >> nom;
-            add_interfaced_vertex(indice,poids,x,y,nom); // affichage sommet
- }
+            add_interfaced_vertex(indice,poids,x,y,nom); // affichage sommets
+        }
+        fichiers.close();
     }
     else
     {
         cout <<"Erreur lors de l'ouverture du fichier Sommet" << endl;
     }
 
-            fichiers.close();
+    ///Aretes
 
-            ///Aretes
+    ifstream fichiera(nom_fichiera, ios::in); ///lecture seule
 
-        ifstream fichiera("aretes.txt", ios::in); ///lecture seule
-
-        if (fichiera)
+    if (fichiera)
+    {
+        fichiera >> ordre2; //Récupère le nombre d'aretes
+        for (int j  = 0; j < ordre2; j++)
         {
-             fichiera >> ordre2; //Récupère le nombre d'aretes
-             std::cout << "1";
-            for (int j  = 0; j < ordre2; j++)
-            {
-                cout << "d";
-                fichiera >> id >> sommet1 >> sommet2 >> pds;
-                cout << "2";
-                add_interfaced_edge(id, sommet1, sommet2, pds);
-                cout << "3";
-            }
-              fichiera.close();
+            fichiera >> id >> sommet1 >> sommet2 >> pds;
+            add_interfaced_edge(id, sommet1, sommet2, pds);
         }
-        else
-        {
-            cout << "Erreur lors de l'ouverture du fichier Arete" << endl;
-        }
+        fichiera.close();
+    }
+    else
+    {
+        cout << "Erreur lors de l'ouverture du fichier Arete" << endl;
+    }
 }
 
-
-
-
-void Graph::sauvegarder(std::string nom_fichier)
+void Graph::sauvegarder(std::string nom_fichierS, std::string nom_fichierA)
 {
     int nbsommet,nbarete;
     std::string nom_fichier1;
     std::string nom_fichier2;
 
-nom_fichier1 = nom_fichier + "sommet.txt";
+    nom_fichier1 = "sommets.txt";
 
     ///sommet
 
@@ -328,32 +380,30 @@ nom_fichier1 = nom_fichier + "sommet.txt";
 
     if(fichier)  // Succes ouverture
     {
-	nbsommet = m_vertices.size();
-  	fichier	<< nbsommet << endl;
+        nbsommet = m_vertices.size();
+        fichier	<< nbsommet << endl;
 
-         for(auto &el : m_vertices)
+        for(auto &el : m_vertices)
         {
             fichier<<el.first<<endl;
             fichier<<el.second.m_value<<endl;
             fichier<<el.second.m_interface->m_top_box.get_posx()<<endl;
-	    fichier<<el.second.m_interface->m_top_box.get_posy()<<endl;
+            fichier<<el.second.m_interface->m_top_box.get_posy()<<endl;
             fichier<<el.second.m_interface->m_img.getname()<<endl;
-
         }
-
         fichier.close();
     }
     else
- {
+    {
         cout<<"Erreur lors de l'ouverture du fichier"<<endl;
     }
 
     /// Aretes
 
-    nom_fichier2 = nom_fichier + "arete.txt";
+    nom_fichier2 = "aretes.txt";
     ofstream fichier2(nom_fichier2.c_str(), ios::out | ios::trunc);  // Ecriture
 
-   if(fichier2)  // Si succes
+    if(fichier2)  // Si succes
     {
         nbarete = m_edges.size();
         fichier2<< nbarete << endl;
@@ -373,7 +423,91 @@ nom_fichier1 = nom_fichier + "sommet.txt";
     {
         cout<<"Erreur lors de l'ouverture du fichier"<<endl;
     }
-
-
+    cout << "SAUVEGARDE REUSSIE" << endl;
 }
+
+            ///Methode pour ajouter sommets et arcs
+void Graph::AjouterSommet()
+{
+    int indice, x, y, taille;  /// Variables sommets
+    std::string namepic;
+    int poids; /// variables pour indice
+    int sommet1, sommet2, indice2;
+    bool ajout = true;
+    std::string saisit;
+
+
+    indice = m_vertices.size(); /// on recupere l'ordre
+
+    std::cout << "      Ajout d'un sommet" << endl;
+
+    std::cout << " Quel est la taille du sommet? (0-100) : ";
+    std:: cin>> taille;
+    std::cout << "La taille du sommet est: " << taille;
+
+// Par defaut, on met le nouveau sommet a un endroit fixe
+    x = 100;
+    y = 100;
+
+    std::cout << endl << "Quelle image voulez-vous affecter au sommet? (sans le.jpg) : ";
+    std::cin >> namepic;
+
+    std::string namepicjpg;
+    namepicjpg = namepic +".jpg";
+
+    add_interfaced_vertex(indice,taille,x,y,namepicjpg);
+    std::cout << "Creation du sommet avec succes" << endl ; // si l'image n'existe pas, ca créer quand meme le sommet sans image mais on a son indice en bas a droite.
+    std::cout << "Le sommet qui vient d'etre creer est d'indice : " << indice << endl;
+// m_vertices.insert(add_interfaced_vertex(indice,taille,x,y,namepic));  /// ??? bail sombre.
+
+
+    while(ajout == true)
+    {
+        std::cout << "      Voulez vous ajouter des aretes? (oui||non): " << endl;
+        std::cin >> saisit;
+        if( saisit == "oui")
+        {
+            std::cout << "Saisir sommet 1 : ";
+            std::cin >> sommet1;
+            std::cout << "Saisir sommet 2 : ";
+            std::cin >> sommet2;
+
+            while (sommet1 == sommet2)
+            {
+                std::cout << " Saisit eronnee, impossible de creer une arete si le sommet1=sommet2" << endl;
+            std::cout << "Resaisir sommet 1 : ";
+            std::cin >> sommet1;
+            std::cout << "Resaisir sommet 2 : ";
+            std::cin >> sommet2;
+            }
+
+            while ((sommet1 >= m_vertices.size()) || (sommet2 >= m_vertices.size()))
+            {
+            std::cout << " Saisit eronnee, un des deux sommets n'existe pas" << endl;
+            std::cout << "Resaisir sommet 1 : ";
+            std::cin >> sommet1;
+            std::cout << "Resaisir sommet 2 : ";
+            std::cin >> sommet2;
+            }
+
+            std::cout << "sommet" << sommet1 << "---" << "sommet" << sommet2 << endl;
+
+
+            std:: cout << "Quel est le poids de l'arete ? : ";
+            std:: cin >> poids;
+            std::cout << "Le poid de l'arete est : " << poids << endl;
+
+            indice2 = m_edges.size();
+
+            add_interfaced_edge(indice2, sommet1, sommet2, poids);
+            std::cout << "Creation de l'arete avec succes" << endl;
+// m_edges.insert(add_interfaced_edge(indice2, indice, sommet2, poids)); /// ??? bail sombre numero 2
+        }
+        else if (saisit == "non")
+        {
+            ajout = false;
+        }
+    }
+}
+//void Graphe::Suppression();
 

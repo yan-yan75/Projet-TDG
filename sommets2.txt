@@ -1,0 +1,13 @@
+12
+0 50 100 100 castor.jpg
+1 50 100 100 chauvesourisbrune.jpg
+2 50 100 100 hibou.jpg
+3 50 100 100 insectes.jpg
+4 50 100 100 lievreamericain.jpg
+5 50 100 100 loupgris.jpg
+6 50 100 100 oiseauchanteur.jpg
+7 50 100 100 cerf.jpg
+8 50 100 100 oursnoir.jpg
+9 50 100 100 petitsrongeurs.jpg
+10 50 100 100 renardroux.jpg
+11 50 100 100 vegetation.jpg

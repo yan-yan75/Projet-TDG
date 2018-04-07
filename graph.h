@@ -264,12 +264,22 @@ class GraphInterface
         /// Dans cette boite seront ajoutés des boutons de contrôle etc...
         grman::WidgetBox m_tool_box;
 
+        ///On declare le button pour l'afficher
+        grman::WidgetButton m_buttonQ;
+        grman::WidgetButton m_buttonS;
+        grman::WidgetButton m_buttonA;
+        grman::WidgetButton m_buttonR;
+        ///On decrlare le button pour ecrire dedans
+        grman::WidgetText m_butQ;
+        grman::WidgetText m_butS;
+        grman::WidgetText m_butA;
+        grman::WidgetText m_butR;
+
 
         // A compléter éventuellement par des widgets de décoration ou
         // d'édition (boutons ajouter/enlever ...)
 
     public :
-
         // Le constructeur met en place les éléments de l'interface
         // voir l'implémentation dans le .cpp
         GraphInterface(int x, int y, int w, int h);
@@ -309,15 +319,15 @@ class Graph
 
         /// La méthode update à appeler dans la boucle de jeu pour les graphes avec interface
         void update();
+        int updateb();
 
 
-        void sauvegarder(std::string nom_fichier);
+            ///Nos fonctions
+        void sauvegarder(std::string nom_fichierS, std::string nom_fichierA);
         void Lecture(std::string nom_fichiers, std::string nom_fichiera);
+        void AjouterSommet();
+        void Suppression();
 
 };
-
-
-
-
 
 #endif // GRAPH_H_INCLUDED
